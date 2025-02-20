@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 import json
 from flask import Flask, request, jsonify
 
@@ -11,6 +12,8 @@ app = Flask(__name__)
 def home():
     return "¡Hola, bienvenido al home!"
 
+# Ruta del driver
+DRIVER_PATH = '/opt/homebrew/bin/chromedriver'
 
 @app.route('/buscar', methods=['GET'])
 def buscar():
@@ -19,26 +22,26 @@ def buscar():
         return jsonify({"error": "Parámetro 'q' requerido"}), 400
 
     # Configuración de Selenium
-    DRIVER_PATH = '/opt/homebrew/bin/chromedriver'
     service = Service(DRIVER_PATH)
     options = Options()
     options.add_argument("--headless")  # Ejecuta sin abrir el navegador
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
-        # Aquí puedes poner otra URL
-        driver.get('https://es.wikipedia.org/wiki/{}'.format(parametro))
+        # Aquí puedes poner otra URL, en este caso usando Google
+        driver.get('https://www.google.com')
+        search_box = driver.find_element(By.NAME, 'q')
+        search_box.send_keys(parametro + Keys.RETURN)
 
-        # Si es Wikipedia, por ejemplo, podemos buscar el título
-        title = driver.find_element(By.CSS_SELECTOR, 'h1').text
+        # Extraer el primer resultado
+        result = driver.find_element(By.CSS_SELECTOR, 'h3').text
 
-        return jsonify({"parametro": parametro, "titulo": title})
+        return jsonify({"parametro": parametro, "resultado": result})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
         driver.quit()
-
 
 if __name__ == '__main__':
     app.run(debug=True)
