@@ -13,7 +13,9 @@ def home():
     return "¡Hola, bienvenido al home!"
 
 # Ruta del driver
-DRIVER_PATH = '/opt/homebrew/bin/chromedriver'
+#DRIVER_PATH = '/opt/homebrew/bin/chromedriver'
+DRIVER_PATH = './venv/bin/chromedriver'
+
 
 @app.route('/buscar', methods=['GET'])
 def buscar():
