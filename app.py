@@ -14,7 +14,7 @@ def home():
 
 # Ruta del driver
 #DRIVER_PATH = '/opt/homebrew/bin/chromedriver'
-DRIVER_PATH = './venv/bin/chromedriver'
+DRIVER_PATH = './venv/lib/python3.11/site-packages/selenium/webdriver/chromium'
 
 
 @app.route('/buscar', methods=['GET'])
