@@ -14,7 +14,7 @@ def home():
 
 # Ruta del driver
 #DRIVER_PATH = '/opt/homebrew/bin/chromedriver'
-DRIVER_PATH = '/venv/bin/chromedriver'
+DRIVER_PATH = './venv/bin/chromedriver'
 
 
 @app.route('/buscar', methods=['GET'])
@@ -41,6 +41,23 @@ def buscar():
         return jsonify({"error": str(e)}), 500
     finally:
         driver.quit()
+
+@app.route('/actualizar', methods=['GET'])
+def actualizar_chromedriver():
+    try:
+        subprocess.run([
+            "wget", "https://storage.googleapis.com/chrome-for-testing-public/133.0.0.0/linux64/chromedriver-linux64.zip",
+            "-O", "chromedriver.zip"
+        ], check=True)
+
+        subprocess.run(["unzip", "chromedriver.zip"], check=True)
+        subprocess.run(["mv", "chromedriver-linux64/chromedriver", CHROMEDRIVER_PATH], check=True)
+        subprocess.run(["chmod", "+x", CHROMEDRIVER_PATH], check=True)
+        return jsonify({"message": "Chromedriver actualizado correctamente"}), 200
+        
+    except subprocess.CalledProcessError as e:
+        return jsonify({"error": f"Error al actualizar chromedriver: {e}"}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
