@@ -29,12 +29,12 @@ def buscar():
 
     try:
         # Aquí puedes poner otra URL, en este caso usando Google
-        driver.get('https://www.google.com')
+        driver.get('https://es.m.wikipedia.org/wiki/')
         search_box = driver.find_element(By.NAME, 'q')
         search_box.send_keys(parametro + Keys.RETURN)
 
         # Extraer el primer resultado
-        result = driver.find_element(By.CSS_SELECTOR, 'h3').text
+        result = driver.find_element(By.CSS_SELECTOR, 'h1').text
 
         return jsonify({"parametro": parametro, "resultado": result})
 
